@@ -1,0 +1,63 @@
+export const WHEEL_DATA = {
+  ruleta1: [
+    "Es la típica persona que cuando",
+    "El otro día en mitad de la daily",
+    "Siempre que se enfrenta a",
+    "Tiene el superpoder de que al",
+    "Nadie sabe cómo lo hace, pero al",
+    "Su estrategia habitual cuando le toca",
+    "En los momentos de máxima tensión al",
+    "Es un caso digno de estudio porque al",
+    "Con una taza de café en la mano y al",
+    "Incluso un viernes a las 17:00 al",
+    "Tiene una habilidad casi mística para que al",
+    "Cuando nadie más quiere",
+  ],
+
+  ruleta2: [
+    "programar un Custom Widget en Mendix",
+    "configurar una Base de Datos en la nube",
+    "desplegar directo a producción un viernes",
+    "explicarle la arquitectura a un cliente complicado",
+    "revisar un Pull Request de Emilio",
+    "refactorizar código heredado sin tests",
+    "estimar tareas a capricho de su Project Manager",
+    "investigar un bug que 'solo pasa en local'",
+    "optimizar el rendimiento del monorepo",
+    "remaquetar la documentación técnica del proyecto",
+    "recuperar conocimientos de un lenguaje muerto en un proyecto legacy",
+    "preparar los test de un monorepo con exceso de arquitectura",
+  ],
+
+  ruleta3: [
+    "se encuentra con una dificultad totalmente inesperada",
+    "el pipeline falla estrepitosamente en el último segundo",
+    "el cliente cambia los requisitos en vivo",
+    "descubre que todo estaba documentado al revés",
+    "aparece un error misterioso que nadie entiende",
+    "se cae el servidor justo antes de la demo",
+    "sobran 10 minutos para la entrega del sprint",
+    "recibe 15 menciones seguidas en Teams/Slack",
+    "pierde la conexión en mitad de la presentación",
+    "se da cuenta de que la solución era borrar una coma",
+    "nadie del equipo sabe responder a su duda",
+    "el entorno de testing empieza a lanzar 500s",
+  ],
+
+  ruleta4: [
+    "pero su sentido del humor y paciencia salvan el día.",
+    "e insiste con brillantez hasta resolverlo aunque refunfuñe.",
+    "y se saca una solución alternativa de la manga en 5 minutos.",
+    "manteniendo el humor e inspirando seguridad a todo el equipo.",
+    "y te explica la solución contagiando el gusto por aprender.",
+    "demostrando una flexibilidad técnica que da envidia.",
+    "y necesita tomarse 4 cafés y mutearse un rato para no llorar.",
+    "pero se le olvida por completo actualizar el ticket en Jira.",
+    "y empieza a soltar palabros raros de coder dosmilero para despistar.",
+    "desapareciendo misteriosamente a 'pensar' durante dos horas.",
+    "y resuelve el problema a martillazos pero sin añadir ni un solo test.",
+    "pidiendo ayuda al equipo pero habiendo probado ya todas las locuras posibles.",
+  ],
+} as const;
+
+export type WheelKey = keyof typeof WHEEL_DATA;
