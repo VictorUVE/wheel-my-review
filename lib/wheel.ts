@@ -12,13 +12,10 @@ export type WheelLocks = {
 
 export const WHEEL_LABELS: Record<WheelKey, string> = {
   ruleta1: "Contexto",
-  ruleta2: "Accion",
-  ruleta3: "Situacion",
-  ruleta4: "Resolucion",
+  ruleta2: "Acción",
+  ruleta3: "Situación",
+  ruleta4: "Resolución",
 };
-
-const TOP_RESOLUTIONS = WHEEL_DATA.ruleta4.slice(0, 6);
-const TIP_RESOLUTIONS = WHEEL_DATA.ruleta4.slice(6);
 
 export const DEFAULT_LOCKS: WheelLocks = {
   ruleta1: false,
@@ -27,31 +24,30 @@ export const DEFAULT_LOCKS: WheelLocks = {
   ruleta4: false,
 };
 
-export function getRandomItem<Item>(items: readonly Item[]): Item {
-  return items[Math.floor(Math.random() * items.length)];
-}
-
-function getResolutionPool(tone: ReviewTone) {
-  return tone === "top" ? TOP_RESOLUTIONS : TIP_RESOLUTIONS;
-}
-
-export function getWheelOptions(key: WheelKey, tone: ReviewTone) {
-  return key === "ruleta4" ? getResolutionPool(tone) : WHEEL_DATA[key];
+/**
+ * Devuelve una opción aleatoria.
+ * En el caso del tipo de review ("top" o "tip"), se divide el array de opciones en dos mitades y se selecciona aleatoriamente de la mitad correspondiente.
+ * Está un poco guarreado.
+ */
+export function getRandomItem<Item>(items: readonly Item[], tone?: ReviewTone): Item {
+  const numberOptions = tone ? items.length / 2 : items.length;
+  const delta = tone && tone === "tip" ? items.length / 2 : 0;
+  return items[Math.floor(Math.random() * numberOptions) + delta];
 }
 
 export function createRandomSelection(tone: ReviewTone): WheelSelection {
   return {
-    ruleta1: getRandomItem(getWheelOptions("ruleta1", tone)),
-    ruleta2: getRandomItem(getWheelOptions("ruleta2", tone)),
-    ruleta3: getRandomItem(getWheelOptions("ruleta3", tone)),
-    ruleta4: getRandomItem(getWheelOptions("ruleta4", tone)),
+    ruleta1: getRandomItem(WHEEL_DATA["ruleta1"]),
+    ruleta2: getRandomItem(WHEEL_DATA["ruleta2"]),
+    ruleta3: getRandomItem(WHEEL_DATA["ruleta3"]),
+    ruleta4: getRandomItem(WHEEL_DATA["ruleta4"], tone),
   };
 }
 
 export function rerollWheel(selection: WheelSelection, key: WheelKey, tone: ReviewTone): WheelSelection {
   return {
     ...selection,
-    [key]: getRandomItem(getWheelOptions(key, tone)),
+    [key]: getRandomItem(WHEEL_DATA[key], tone),
   };
 }
 

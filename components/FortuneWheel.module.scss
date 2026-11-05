@@ -1,0 +1,223 @@
+@use "./theme" as theme;
+
+.root {
+  --_items: 12;
+  --hub-size: 4rem;
+
+  padding: 1rem;
+  @include theme.card-surface;
+  backdrop-filter: blur(4px);
+  width: 350px;
+  margin: auto;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.title {
+  margin: 0;
+  color: rgb(207 250 254 / 0.7);
+  font-size: 0.6875rem;
+  font-weight: 900;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+
+.value {
+  margin: 0.5rem 0 0;
+  color: theme.$text-secondary;
+  font-size: 0.875rem;
+  line-height: 1.5rem;
+  min-height: 6rem;
+}
+
+.spinButton {
+  padding: 0.5rem 1rem;
+  border: 1px solid theme.$accent-cyan-border;
+  background: theme.$accent-cyan-fill;
+  color: theme.$accent-cyan-text;
+  letter-spacing: 0.24em;
+  transition:
+    background-color 160ms ease,
+    opacity 160ms ease;
+  @include theme.pill-button;
+
+  &:hover {
+    background: theme.$accent-cyan-fill-hover;
+  }
+}
+
+.shell {
+  all: unset;
+  aspect-ratio: 1 / 1;
+  container-type: inline-size;
+  direction: ltr;
+  display: grid;
+  position: relative;
+  width: 100%;
+  font-family: system-ui, sans-serif;
+
+  &::after {
+    aspect-ratio: 1 / cos(30deg);
+    background-color: crimson;
+    clip-path: polygon(50% 100%, 100% 0, 0 0);
+    content: "";
+    height: 4cqi;
+    position: absolute;
+    place-self: start center;
+    scale: 1.4;
+  }
+}
+
+.wheel {
+  all: unset;
+  position: absolute;
+  clip-path: inset(0 0 0 0 round 50%);
+  display: grid;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  place-content: center center;
+  aspect-ratio: 1 / 1;
+  transform-origin: center;
+  background: Canvas;
+  container-type: inline-size;
+  direction: ltr;
+  align-items: center;
+  justify-content: center;
+}
+
+.segment {
+  position: absolute;
+  background: hsl(calc(360deg / var(--_items) * calc(var(--_idx))), 100%, 75%);
+  clip-path: polygon(0% 0, 100% 50%, 0% 100%);
+  display: grid;
+  aspect-ratio: 1 / calc(2 * tan(180deg / var(--_items)));
+  list-style: none;
+  padding: 0;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  rotate: calc(360deg / var(--_items) * calc(var(--_idx) - 1));
+  transform-origin: 100% 0;
+  width: 50cqi;
+  align-items: center;
+  justify-content: flex-start;
+
+  &:nth-of-type(1) {
+    --_idx: 1;
+  }
+  &:nth-of-type(2) {
+    --_idx: 2;
+  }
+  &:nth-of-type(3) {
+    --_idx: 3;
+  }
+  &:nth-of-type(4) {
+    --_idx: 4;
+  }
+  &:nth-of-type(5) {
+    --_idx: 5;
+  }
+  &:nth-of-type(6) {
+    --_idx: 6;
+  }
+  &:nth-of-type(7) {
+    --_idx: 7;
+  }
+  &:nth-of-type(8) {
+    --_idx: 8;
+  }
+  &:nth-of-type(9) {
+    --_idx: 9;
+  }
+  &:nth-of-type(10) {
+    --_idx: 10;
+  }
+  &:nth-of-type(11) {
+    --_idx: 11;
+  }
+  &:nth-of-type(12) {
+    --_idx: 12;
+  }
+
+  &:has(.segmentLabel.segmentLabelSelected) {
+    background-color: theme.$color-white !important;
+  }
+}
+
+.segmentLabel {
+  display: block;
+  padding: 0 50px 0 1ch;
+  color: theme.$color-ink;
+  font-size: 10px;
+  line-height: 1.1;
+  transition:
+    background-color 180ms ease,
+    box-shadow 180ms ease;
+
+  &.segmentLabelSelected {
+    color: theme.$color-ink;
+    background-color: theme.$color-white;
+  }
+}
+
+.hub {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--hub-size);
+  height: var(--hub-size);
+  border: 1px solid rgb(255 255 255 / 0.18);
+  border-radius: 999px;
+  background: hsla(0, 0%, 100%, 0.8);
+  box-shadow: 0 0 25px rgb(0 0 0 / 0.45);
+  transform: translate(-50%, -50%);
+}
+
+.hubText {
+  color: theme.$color-ink;
+  font-size: 0.625rem;
+  font-weight: 900;
+  text-transform: uppercase;
+
+  &.hubTextSpinning {
+    animation: pulse 1s ease-in-out infinite;
+  }
+}
+
+@media (max-width: 640px) {
+  .root {
+    --wheel-size: 14rem;
+    --hub-size: 3.5rem;
+    --segment-width: 41%;
+  }
+
+  .header {
+    flex-direction: column;
+  }
+
+  .spinButton {
+    align-self: flex-start;
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+}

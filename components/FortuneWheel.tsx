@@ -1,89 +1,159 @@
+import { useEffect, useRef } from "react";
+
+import styles from "@/components/FortuneWheel.module.scss";
+
+const POINTER_ANGLE = 90;
+
 type FortuneWheelProps = {
   title: string;
   options: readonly string[];
-  selectedValue: string;
-  rotation: number;
+  spinId: number;
+  selectedIndex: number;
+  targetSelectedIndex: number;
   isSpinning: boolean;
   onSpin: () => void;
+  onSpinEnd: (selectedIndex: number) => void;
 };
-
-function buildWheelBackground(segmentCount: number) {
-  const palette = ["#fb7185", "#f97316", "#facc15", "#2dd4bf", "#38bdf8", "#a78bfa", "#f472b6", "#34d399"];
-  const degreeStep = 360 / segmentCount;
-
-  return `conic-gradient(${Array.from({ length: segmentCount }, (_, index) => {
-    const start = index * degreeStep;
-    const end = start + degreeStep;
-    return `${palette[index % palette.length]} ${start}deg ${end}deg`;
-  }).join(", ")})`;
-}
 
 export default function FortuneWheel({
   title,
   options,
-  selectedValue,
-  rotation,
+  spinId,
+  selectedIndex,
+  targetSelectedIndex,
   isSpinning,
   onSpin,
+  onSpinEnd,
 }: FortuneWheelProps) {
-  const segmentCount = options.length;
-  const degreeStep = 360 / segmentCount;
-  const selectedIndex = Math.max(options.indexOf(selectedValue), 0);
+  const wheelRef = useRef<HTMLUListElement | null>(null);
+  const hubTextRef = useRef<HTMLSpanElement | null>(null);
+  const animationRef = useRef<Animation | null>(null);
+  const onSpinEndRef = useRef(onSpinEnd);
+  const lastProcessedSpinIdRef = useRef<number>(spinId);
+  const accumulatedRotationRef = useRef<number>(0);
+  const hasInitializedRotationRef = useRef(false);
+
+  useEffect(() => {
+    onSpinEndRef.current = onSpinEnd;
+  }, [onSpinEnd]);
+
+  useEffect(() => {
+    const wheelElement = wheelRef.current;
+    const optionCount = options.length;
+
+    if (!wheelElement || optionCount === 0 || hasInitializedRotationRef.current) {
+      return;
+    }
+
+    const degreesPerItem = 360 / optionCount;
+    const initialRotation = POINTER_ANGLE - selectedIndex * degreesPerItem;
+
+    accumulatedRotationRef.current = initialRotation;
+    wheelElement.style.transform = `rotate(${initialRotation}deg)`;
+    hasInitializedRotationRef.current = true;
+  }, [options.length, selectedIndex]);
+
+  useEffect(() => {
+    const wheelElement = wheelRef.current;
+    const hubTextElement = hubTextRef.current;
+    const optionCount = options.length;
+
+    if (!wheelElement || !hubTextElement || optionCount === 0) {
+      return;
+    }
+
+    if (spinId === lastProcessedSpinIdRef.current) {
+      return;
+    }
+
+    if (targetSelectedIndex < 0 || targetSelectedIndex >= optionCount) {
+      return;
+    }
+
+    const degreesPerItem = 360 / optionCount;
+    const segmentReferenceAngle = targetSelectedIndex * degreesPerItem;
+    const normalizedCurrentRotation = ((accumulatedRotationRef.current % 360) + 360) % 360;
+    const normalizedTargetRotation =
+      (((POINTER_ANGLE - segmentReferenceAngle) % 360) + 360) % 360;
+    const extraTurns = 5 * 360;
+    const deltaRotation = ((normalizedTargetRotation - normalizedCurrentRotation + 360) % 360) + extraTurns;
+    const nextRotation = accumulatedRotationRef.current + deltaRotation;
+
+    animationRef.current?.cancel();
+    hubTextElement.classList.add(styles.hubTextSpinning);
+
+    const animation = wheelElement.animate(
+      [{ transform: `rotate(${accumulatedRotationRef.current}deg)` }, { transform: `rotate(${nextRotation}deg)` }],
+      {
+        duration: 4000,
+        easing: "cubic-bezier(0.440, -0.205, 0.000, 1.130)",
+        fill: "forwards",
+        iterations: 1,
+        direction: "normal",
+      },
+    );
+
+    animationRef.current = animation;
+    lastProcessedSpinIdRef.current = spinId;
+
+    animation.onfinish = () => {
+      accumulatedRotationRef.current = nextRotation;
+      hubTextElement.classList.remove(styles.hubTextSpinning);
+      onSpinEndRef.current(targetSelectedIndex);
+    };
+
+    animation.oncancel = () => {
+      hubTextElement.classList.remove(styles.hubTextSpinning);
+    };
+
+    return () => {
+      animation.onfinish = null;
+      animation.oncancel = null;
+    };
+  }, [options.length, spinId, targetSelectedIndex]);
+
+  useEffect(() => {
+    const hubTextElement = hubTextRef.current;
+
+    return () => {
+      hubTextElement?.classList.remove(styles.hubTextSpinning);
+      animationRef.current?.cancel();
+    };
+  }, []);
 
   return (
-    <section className="rounded-4xl border border-white/12 bg-white/6 p-4 shadow-[0_18px_50px_rgba(0,0,0,0.28)] backdrop-blur-sm">
-      <div className="mb-4 flex items-start justify-between gap-4">
+    <section className={styles.root}>
+      <div className={styles.header}>
         <div>
-          <p className="text-[11px] font-black uppercase tracking-[0.28em] text-cyan-100/70">{title}</p>
-          <p className="mt-2 text-sm leading-6 text-white/72">{selectedValue}</p>
+          <p className={styles.title}>{title}</p>
+          <p className={styles.value}>{isSpinning ? "" : (options[selectedIndex] ?? "")}</p>
         </div>
 
-        <button
-          type="button"
-          onClick={onSpin}
-          className="rounded-full border border-cyan-200/40 bg-cyan-300/14 px-4 py-2 text-[11px] font-black uppercase tracking-[0.24em] text-cyan-50 transition hover:bg-cyan-300/24"
-        >
+        <button type="button" onClick={onSpin} className={styles.spinButton}>
           Girar
         </button>
       </div>
 
-      <div className="relative mx-auto aspect-square w-full max-w-64">
-        <div className="absolute left-1/2 top-0 z-20 h-0 w-0 -translate-x-1/2 border-x-14 border-b-22 border-x-transparent border-b-amber-300 drop-shadow-[0_6px_18px_rgba(251,191,36,0.5)]" />
-        <div
-          className="absolute inset-0 rounded-full border-10 border-white/14 shadow-[inset_0_0_0_8px_rgba(255,255,255,0.06),0_20px_45px_rgba(0,0,0,0.35)] transition-transform duration-2200 ease-[cubic-bezier(0.18,0.88,0.18,1)]"
-          style={{
-            transform: `rotate(${rotation}deg)`,
-            backgroundImage: buildWheelBackground(segmentCount),
-          }}
-        >
-          <div className="absolute inset-[14%] rounded-full bg-slate-950/78 ring-1 ring-white/10" />
-
+      <div className={styles.shell}>
+        <ul className={styles.wheel} ref={wheelRef}>
           {options.map((option, index) => {
-            const angle = degreeStep * index + degreeStep / 2;
-            const isSelected = index === selectedIndex;
-
             return (
-              <div
-                key={`${title}-${option}`}
-                className="absolute left-1/2 top-1/2 w-[38%] origin-left -translate-y-1/2"
-                style={{ transform: `rotate(${angle - 90}deg)` }}
-              >
+              <li key={`${title}-${option}`} className={styles.segment}>
                 <span
-                  className={`block -translate-y-1/2 rounded-full px-3 py-1 text-[10px] font-black uppercase leading-tight tracking-[0.08em] text-slate-950 transition ${isSelected ? "bg-white shadow-[0_0_20px_rgba(255,255,255,0.45)]" : "bg-white/72"}`}
+                  className={`${styles.segmentLabel} ${
+                    !isSpinning && index === selectedIndex ? styles.segmentLabelSelected : ""
+                  }`}
                 >
                   {option}
                 </span>
-              </div>
+              </li>
             );
           })}
-
-          <div className="absolute left-1/2 top-1/2 z-10 flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-white/18 bg-slate-950/92 shadow-[0_0_25px_rgba(0,0,0,0.45)]">
-            <span
-              className={`text-[10px] font-black uppercase tracking-[0.26em] text-white ${isSpinning ? "animate-pulse" : ""}`}
-            >
-              Spin
-            </span>
-          </div>
+        </ul>
+        <div className={styles.hub} onClick={onSpin}>
+          <span ref={hubTextRef} className={styles.hubText}>
+            ¡Dale!
+          </span>
         </div>
       </div>
     </section>

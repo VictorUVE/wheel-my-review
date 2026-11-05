@@ -1,0 +1,77 @@
+@use "sass:map";
+
+$color-white: white;
+$color-ink: rgb(15 23 42);
+
+$panel-border-soft: rgb(255 255 255 / 0.1);
+$panel-border: rgb(255 255 255 / 0.12);
+$panel-background: rgb(255 255 255 / 0.06);
+$panel-background-strong: rgb(0 0 0 / 0.3);
+$panel-shadow: 0 18px 50px rgb(0 0 0 / 0.28);
+$panel-shadow-strong: 0 25px 120px rgb(0 0 0 / 0.45);
+
+$text-primary: rgb(255 255 255 / 0.92);
+$text-secondary: rgb(255 255 255 / 0.72);
+$text-muted: rgb(255 255 255 / 0.68);
+$text-soft: rgb(255 255 255 / 0.5);
+$text-ghost: rgb(255 255 255 / 0.28);
+
+$accent-cyan-border: rgb(165 243 252 / 0.4);
+$accent-cyan-fill: rgb(103 232 249 / 0.14);
+$accent-cyan-fill-hover: rgb(103 232 249 / 0.24);
+$accent-cyan-text: rgb(236 254 255);
+
+$accent-fuchsia-border: rgb(240 171 252 / 0.45);
+$accent-fuchsia-fill: rgb(232 121 249 / 0.14);
+$accent-fuchsia-fill-hover: rgb(232 121 249 / 0.24);
+$accent-fuchsia-text: rgb(250 232 255);
+
+$accent-emerald-border: rgb(110 231 183 / 0.45);
+$accent-emerald-fill: rgb(74 222 128 / 0.18);
+$accent-emerald-fill-hover: rgb(74 222 128 / 0.26);
+$accent-emerald-text: rgb(236 253 245);
+
+$accent-rose-border: rgb(252 165 165 / 0.45);
+$accent-rose-shadow: 0 10px 30px rgb(251 113 133 / 0.38);
+$pointer-color: #fcd34d;
+$pointer-shadow: drop-shadow(0 6px 18px rgb(251 191 36 / 0.5));
+
+$font-size-large: clamp(1.25rem, 4vw, 1.5rem);
+
+$tone-top: (
+  eyebrow: rgb(167 243 208 / 0.8),
+  border: rgb(110 231 183 / 0.7),
+  surface: rgb(74 222 128 / 0.1),
+  text: rgb(209 250 229),
+  glow: 0 0 30px rgb(16 185 129 / 0.18),
+);
+
+$tone-tip: (
+  eyebrow: rgb(253 230 138 / 0.8),
+  border: rgb(252 211 77 / 0.7),
+  surface: rgb(251 191 36 / 0.1),
+  text: rgb(254 243 199),
+  glow: 0 0 30px rgb(245 158 11 / 0.16),
+);
+
+@mixin pill-button {
+  border-radius: 999px;
+  font-size: 0.6875rem;
+  font-weight: 900;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+@mixin card-surface($background: $panel-background, $border: $panel-border, $shadow: $panel-shadow) {
+  border: 1px solid $border;
+  border-radius: 2rem;
+  background: $background;
+  box-shadow: $shadow;
+}
+
+@mixin tone-surface($tone) {
+  border-color: map.get($tone, border);
+  background: map.get($tone, surface);
+  color: map.get($tone, text);
+  box-shadow: map.get($tone, glow);
+}

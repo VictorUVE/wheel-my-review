@@ -1,0 +1,562 @@
+@use "sass:map";
+@use "./theme" as theme;
+
+$page-background: linear-gradient(180deg, #12071f 0%, #090111 42%, #05010a 100%);
+$grid-color: rgb(255 255 255 / 0.04);
+$modal-overlay: rgb(2 6 23 / 0.78);
+
+.page {
+  position: relative;
+  overflow: hidden;
+  padding: 2.5rem 1rem;
+}
+
+.backgroundGlow,
+.backgroundGrid {
+  position: absolute;
+  inset: 0;
+  z-index: -10;
+}
+
+.backgroundGlow {
+  background:
+    radial-gradient(circle at top, rgb(251 191 36 / 0.25), transparent 28%),
+    radial-gradient(circle at bottom, rgb(244 63 94 / 0.18), transparent 35%), $page-background;
+}
+
+.backgroundGrid {
+  background-image:
+    linear-gradient($grid-color 1px, transparent 1px), linear-gradient(90deg, $grid-color 1px, transparent 1px);
+  background-size: 34px 34px;
+  opacity: 0.3;
+}
+
+.frame {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  width: 100%;
+  max-width: 80rem;
+  min-height: calc(100vh - 5rem);
+  margin: 0 auto;
+  padding: 1.25rem;
+  @include theme.card-surface(theme.$panel-background-strong, theme.$panel-border-soft, theme.$panel-shadow-strong);
+  backdrop-filter: blur(8px);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.hero {
+  max-width: 48rem;
+}
+
+.badge {
+  display: inline-flex;
+  width: fit-content;
+  padding: 0.25rem 1rem;
+  border: 1px solid rgb(240 171 252 / 0.4);
+  border-radius: 999px;
+  background: rgb(232 121 249 / 0.1);
+  color: rgb(250 232 255);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+}
+
+.heroBlock {
+  margin-top: 1rem;
+}
+
+.heroTitle {
+  margin: 0;
+  color: theme.$color-white;
+  font-size: theme.$font-size-large;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.heroText {
+  max-width: 42rem;
+  margin: 0.75rem 0 0;
+  color: theme.$text-secondary;
+  font-size: 1rem;
+  line-height: 1.4rem;
+}
+
+.headerActions {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.button {
+  padding: 0.75rem 1.25rem;
+  border: 1px solid rgb(255 255 255 / 0.15);
+  border-radius: 1rem;
+  background: rgb(255 255 255 / 0.08);
+  color: rgb(255 255 255 / 0.84);
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  transition:
+    background-color 160ms ease,
+    transform 160ms ease,
+    opacity 160ms ease;
+
+  &:hover {
+    background: rgb(255 255 255 / 0.14);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.copyButton {
+  border-color: theme.$accent-emerald-border;
+  background: theme.$accent-emerald-fill;
+  color: theme.$accent-emerald-text;
+
+  &:hover {
+    background: theme.$accent-emerald-fill-hover;
+  }
+}
+
+.group {
+  padding: 1.25rem;
+  @include theme.card-surface(rgb(0 0 0 / 0.26), theme.$panel-border-soft, 0 20px 70px rgb(0 0 0 / 0.28));
+}
+
+.groupHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.groupEyebrow {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 900;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+
+  &.toneTop {
+    color: map.get(theme.$tone-top, eyebrow);
+  }
+
+  &.toneTip {
+    color: map.get(theme.$tone-tip, eyebrow);
+  }
+}
+
+.groupTitle {
+  margin: 0;
+  color: theme.$color-white;
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.groupText {
+  max-width: 40rem;
+  margin: 0;
+  color: rgb(255 255 255 / 0.66);
+  font-size: 0.875rem;
+  line-height: 1.5rem;
+}
+
+.slotGrid {
+  display: grid;
+  gap: 1rem;
+}
+
+.slotCard {
+  padding: 1rem;
+  border: 1px solid transparent;
+  border-radius: 1.75rem;
+  box-shadow: 0 18px 55px rgb(0 0 0 / 0.18);
+  transition: transform 180ms ease;
+
+  &.slotTop {
+    @include theme.tone-surface(theme.$tone-top);
+  }
+
+  &.slotTip {
+    @include theme.tone-surface(theme.$tone-tip);
+  }
+}
+
+.slotHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.slotLabel {
+  margin: 0;
+  color: rgb(255 255 255 / 0.6);
+  font-size: 0.75rem;
+  font-weight: 900;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+
+.slotDescription {
+  margin: 0.25rem 0 0;
+  color: rgb(255 255 255 / 0.74);
+  font-size: 0.875rem;
+}
+
+.ghostButton {
+  padding: 0.5rem 1rem;
+  border: 1px solid rgb(255 255 255 / 0.16);
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.1);
+  color: theme.$color-white;
+  font-size: 0.6875rem;
+  font-weight: 900;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  transition: background-color 160ms ease;
+
+  &:hover {
+    background: rgb(255 255 255 / 0.18);
+  }
+}
+
+.field {
+  display: block;
+}
+
+.fieldLabel {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: theme.$text-soft;
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+.textarea,
+.reviewOutput {
+  width: 100%;
+  border: 1px solid rgb(255 255 255 / 0.12);
+  color: theme.$color-white;
+  font-size: 0.875rem;
+  line-height: 1.5rem;
+}
+
+.textarea {
+  min-height: 6rem;
+  padding: 0.75rem 1rem;
+  border-radius: 1.5rem;
+  background: rgb(0 0 0 / 0.22);
+  outline: none;
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease;
+
+  &::placeholder {
+    color: theme.$text-ghost;
+  }
+
+  &:focus {
+    border-color: rgb(103 232 249 / 0.6);
+    background: rgb(0 0 0 / 0.32);
+  }
+}
+
+.summary {
+  padding: 1.25rem;
+  border: 1px solid rgb(255 255 255 / 0.12);
+  border-radius: 1.75rem;
+  background: rgb(2 6 23 / 0.7);
+  box-shadow: 0 20px 80px rgb(0 0 0 / 0.35);
+}
+
+.summaryHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.summaryEyebrow {
+  margin: 0;
+  color: rgb(165 243 252 / 0.75);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+}
+
+.summaryTitle {
+  margin: 0;
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.summaryText {
+  max-width: 48rem;
+  margin: 0.5rem 0 0;
+  color: theme.$text-muted;
+  font-size: 0.875rem;
+  line-height: 1.5rem;
+}
+
+.summaryActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.linkButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgb(240 171 252 / 0.45);
+  border-radius: 1rem;
+  background: rgb(232 121 249 / 0.14);
+  color: theme.$accent-fuchsia-text;
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: background-color 160ms ease;
+
+  &:hover {
+    background: rgb(232 121 249 / 0.24);
+  }
+}
+
+.reviewOutput {
+  min-height: 16rem;
+  margin-top: 1.5rem;
+  padding: 1rem;
+  border-radius: 1.5rem;
+  background: rgb(255 255 255 / 0.06);
+  outline: none;
+  resize: vertical;
+}
+
+.footer {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1rem;
+  border: 1px solid theme.$panel-border;
+  border-radius: 1.5rem;
+  background: rgb(255 255 255 / 0.06);
+  color: theme.$text-muted;
+  font-size: 0.875rem;
+}
+
+.footerTitle {
+  margin: 0;
+  color: rgb(255 255 255 / 0.84);
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.footerText {
+  margin: 0.25rem 0 0;
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem 1rem;
+}
+
+.modalOverlay {
+  position: absolute;
+  inset: 0;
+  background: $modal-overlay;
+  backdrop-filter: blur(4px);
+}
+
+.modalPanel {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 1600px;
+  max-height: 92vh;
+  padding: 1.25rem;
+  border: 1px solid rgb(255 255 255 / 0.12);
+  border-radius: 2rem;
+  background: linear-gradient(180deg, rgb(9 12 24 / 0.98) 0%, rgb(12 5 22 / 0.96) 100%);
+  box-shadow: 0 30px 120px rgb(0 0 0 / 0.55);
+}
+
+.modalHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid rgb(255 255 255 / 0.1);
+}
+
+.modalEyebrow {
+  margin: 0;
+  color: rgb(165 243 252 / 0.76);
+  font-size: 0.75rem;
+  font-weight: 900;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+}
+
+.modalTitle {
+  margin: 0;
+  color: theme.$color-white;
+  font-size: theme.$font-size-large;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.modalText {
+  max-width: 48rem;
+  margin: 0.5rem 0 0;
+  color: rgb(255 255 255 / 0.66);
+  font-size: 0.875rem;
+  line-height: 1.5rem;
+}
+
+.modalActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.primaryButton {
+  padding: 0.75rem 1.25rem;
+  border: 1px solid theme.$accent-rose-border;
+  border-radius: 1rem;
+  background: linear-gradient(135deg, rgb(251 113 133) 0%, rgb(253 186 116) 100%);
+  color: theme.$color-ink;
+  font-size: 0.875rem;
+  font-weight: 900;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  box-shadow: theme.$accent-rose-shadow;
+  transition:
+    transform 160ms ease,
+    opacity 160ms ease;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.wheelGrid {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.currentSelection {
+  margin-top: 1.5rem;
+  padding: 1.25rem;
+  border: 1px solid rgb(255 255 255 / 0.12);
+  border-radius: 1.5rem;
+  background: rgb(255 255 255 / 0.06);
+}
+
+.currentSelectionLabel {
+  margin: 0;
+  color: rgb(255 255 255 / 0.52);
+  font-size: 0.6875rem;
+  font-weight: 900;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+
+.currentSelectionText {
+  margin: 0.75rem 0 0;
+  color: theme.$text-primary;
+  font-size: 1rem;
+  line-height: 1.75rem;
+}
+
+@media (min-width: 640px) {
+  .page {
+    padding-right: 1.5rem;
+    padding-left: 1.5rem;
+  }
+
+  .frame,
+  .group,
+  .summary,
+  .modalPanel {
+    padding: 1.5rem;
+  }
+
+  .headerActions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .summaryHeader,
+  .modalHeader,
+  .groupHeader,
+  .header {
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+
+  .header,
+  .summaryHeader,
+  .modalHeader,
+  .groupHeader {
+    flex-direction: row;
+  }
+}
+
+@media (min-width: 768px) {
+  .footer {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1000px) {
+  .page {
+    padding-right: 2rem;
+    padding-left: 2rem;
+  }
+
+  .wheelGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1520px) {
+  .slotGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .wheelGrid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
