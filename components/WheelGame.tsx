@@ -29,14 +29,13 @@ type ModalState = {
   title: string;
 };
 
-const SLOT_KEYS: WheelKey[] = ["ruleta1", "ruleta2", "ruleta3", "ruleta4"];
+const SLOT_KEYS: WheelKey[] = ["ruleta1", "ruleta2", "ruleta3"];
 
 function createWheelRecord<T>(value: T): Record<WheelKey, T> {
   return {
     ruleta1: value,
     ruleta2: value,
     ruleta3: value,
-    ruleta4: value,
   };
 }
 
@@ -124,11 +123,11 @@ export default function WheelGame() {
     setTargetSelection(slot.selection);
     setSpinningKeys([]);
     setWheelSpinIds(createWheelRecord(0));
+    const wheelData = WHEEL_DATA[slot.tone];
     setWheelTargetIndexes({
-      ruleta1: getOptionIndex(WHEEL_DATA.ruleta1, slot.selection.ruleta1),
-      ruleta2: getOptionIndex(WHEEL_DATA.ruleta2, slot.selection.ruleta2),
-      ruleta3: getOptionIndex(WHEEL_DATA.ruleta3, slot.selection.ruleta3),
-      ruleta4: getOptionIndex(WHEEL_DATA.ruleta4, slot.selection.ruleta4),
+      ruleta1: getOptionIndex(wheelData.ruleta1, slot.selection.ruleta1),
+      ruleta2: getOptionIndex(wheelData.ruleta2, slot.selection.ruleta2),
+      ruleta3: getOptionIndex(wheelData.ruleta3, slot.selection.ruleta3),
     });
   }
 
@@ -148,11 +147,12 @@ export default function WheelGame() {
 
     const nextSelection = rerollWheel(targetSelection, key, modalState.tone);
     const nextValue = nextSelection[key];
+    const wheelData = WHEEL_DATA[modalState.tone];
 
     setTargetSelection(nextSelection);
     setWheelTargetIndexes(current => ({
       ...current,
-      [key]: getOptionIndex(WHEEL_DATA[key], nextValue),
+      [key]: getOptionIndex(wheelData[key], nextValue),
     }));
     setWheelSpinIds(current => ({
       ...current,
@@ -183,7 +183,11 @@ export default function WheelGame() {
   }
 
   function handleWheelSpinEnd(key: WheelKey, selectedIndex: number) {
-    const selectedValue = WHEEL_DATA[key][selectedIndex];
+    if (!modalState) {
+      return;
+    }
+
+    const selectedValue = WHEEL_DATA[modalState.tone][key][selectedIndex];
 
     if (!selectedValue) {
       return;
@@ -324,27 +328,6 @@ export default function WheelGame() {
 
           <textarea readOnly value={reviewDraft} rows={12} className={styles.reviewOutput} />
         </section>
-
-        <footer className={styles.footer}>
-          <div>
-            <p className={styles.footerTitle}>6 campos</p>
-            <p className={styles.footerText}>
-              3 tops y 3 tips con generación separada para que cada texto salga cuando de verdad lo necesitas.
-            </p>
-          </div>
-          <div>
-            <p className={styles.footerTitle}>4 ruedas por modal</p>
-            <p className={styles.footerText}>
-              Cada rueda tiene su propio botón y además existe un disparo conjunto para relanzar todo de una vez.
-            </p>
-          </div>
-          <div>
-            <p className={styles.footerTitle}>Salida editable</p>
-            <p className={styles.footerText}>
-              El resultado se vuelca al campo activo y luego puede retocarse, copiarse o abrirse en mailto sin backend.
-            </p>
-          </div>
-        </footer>
       </div>
 
       {modalState && draftSelection ? (
@@ -368,7 +351,7 @@ export default function WheelGame() {
                   className={styles.primaryButton}
                   disabled={isModalSpinning}
                 >
-                  Girar las 4
+                  Girar las 3
                 </button>
                 <button
                   type="button"
@@ -388,10 +371,10 @@ export default function WheelGame() {
               {SLOT_KEYS.map(key => (
                 <FortuneWheel
                   key={key}
-                  title={WHEEL_LABELS[key]}
-                  options={WHEEL_DATA[key]}
+                  title={WHEEL_LABELS[modalState.tone][key]}
+                  options={WHEEL_DATA[modalState.tone][key]}
                   spinId={wheelSpinIds[key]}
-                  selectedIndex={getOptionIndex(WHEEL_DATA[key], draftSelection[key])}
+                  selectedIndex={getOptionIndex(WHEEL_DATA[modalState.tone][key], draftSelection[key])}
                   targetSelectedIndex={wheelTargetIndexes[key]}
                   isSpinning={spinningKeys.includes(key)}
                   onSpin={() => spinWheel(key)}

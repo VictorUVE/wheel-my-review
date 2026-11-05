@@ -176,6 +176,7 @@ $modal-overlay: rgb(2 6 23 / 0.78);
 .slotGrid {
   display: grid;
   gap: 1rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .slotCard {
@@ -396,14 +397,15 @@ $modal-overlay: rgb(2 6 23 / 0.78);
 .modalPanel {
   position: relative;
   z-index: 10;
-  width: 100%;
-  max-width: 1600px;
+  width: 900px;
+  max-width: 90%;
   max-height: 92vh;
   padding: 1.25rem;
   border: 1px solid rgb(255 255 255 / 0.12);
   border-radius: 2rem;
   background: linear-gradient(180deg, rgb(9 12 24 / 0.98) 0%, rgb(12 5 22 / 0.96) 100%);
   box-shadow: 0 30px 120px rgb(0 0 0 / 0.55);
+  overflow: hidden auto;
 }
 
 .modalHeader {
@@ -472,9 +474,11 @@ $modal-overlay: rgb(2 6 23 / 0.78);
 }
 
 .wheelGrid {
-  display: grid;
+  display: flex;
+  flex-wrap: wrap;
   gap: 1rem;
   margin-top: 1.5rem;
+  align-items: center;
 }
 
 .currentSelection {
@@ -538,25 +542,28 @@ $modal-overlay: rgb(2 6 23 / 0.78);
   .footer {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
-}
-
-@media (min-width: 1000px) {
   .page {
     padding-right: 2rem;
     padding-left: 2rem;
   }
 
-  .wheelGrid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .modalHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .modalActions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .modalPanel {
+    width: 900px;
   }
 }
 
 @media (min-width: 1520px) {
-  .slotGrid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .wheelGrid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+  .modalPanel {
+    width: 1150px;
   }
 }
